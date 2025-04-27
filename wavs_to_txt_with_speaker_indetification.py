@@ -9,7 +9,7 @@ from datetime import timedelta
 import traceback
 import torchaudio
 from resemblyzer import VoiceEncoder, preprocess_wav
-from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
 import numpy as np
 
 # Загрузка .env переменных
@@ -46,27 +46,16 @@ start_time = time.time()
 extensions = (".wav", ".mp3", ".m4a", ".flac", ".ogg", ".mp4", ".avi", ".mov", ".mkv")
 media_files = [f for f in os.listdir(folder_path) if f.lower().endswith(extensions)]
 
-def find_optimal_clusters(embeddings, max_clusters=6):
-    distortions = []
+def cluster_speakers_dbscan(embeddings):
     embeddings = np.array(embeddings)
 
-    for k in range(1, max_clusters + 1):
-        kmeans = KMeans(n_clusters=k, random_state=0).fit(embeddings)
-        distortions.append(kmeans.inertia_)  # inertia = сумма квадратов расстояний до центров кластеров
+    clustering = DBSCAN(eps=0.5, min_samples=5, metric="euclidean").fit(embeddings)
+    labels = clustering.labels_
 
-    # Ищем резкое уменьшение (первое сильное падение)
-    deltas = np.diff(distortions)
-    deltas2 = np.diff(deltas)
+    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+    print(f"🔍 Найдено {n_clusters} спикеров (через DBSCAN)")
 
-    # Если мало точек, по умолчанию 2
-    if len(deltas2) == 0:
-        return 2
-
-    # Ищем максимум второго производного изменения
-    optimal_clusters = np.argmin(deltas2) + 2  # +2 потому что дважды дифференцировали
-
-    return optimal_clusters
-
+    return labels
 
 def format_timestamp_srt(seconds):
     td = timedelta(seconds=seconds)
@@ -81,7 +70,7 @@ def format_timestamp_srt(seconds):
 successfully_processed = []
 failed_files = []
 
-encoder = VoiceEncoder()  # Загружаем один раз
+encoder = VoiceEncoder()
 
 for filename in tqdm(media_files, desc="Обработка файлов", ncols=100):
     try:
@@ -102,13 +91,8 @@ for filename in tqdm(media_files, desc="Обработка файлов", ncols=
         # Получение эмбеддингов
         frames = encoder.embed_utterance(wav, return_partials=True)[1]
 
-        # Кластеризация голосов
-        optimal_speakers = find_optimal_clusters(frames, max_clusters=6) # Автоматически определяем количество спикеров
-        print(f"🔍 Автоматически определено количество спикеров: {optimal_speakers}")
-
-        kmeans = KMeans(n_clusters=optimal_speakers, random_state=0).fit(frames)
-
-        speaker_labels = kmeans.labels_
+        # Кластеризация через DBSCAN
+        speaker_labels = cluster_speakers_dbscan(frames)
 
         final_text = ""
         srt_content = ""
@@ -118,13 +102,16 @@ for filename in tqdm(media_files, desc="Обработка файлов", ncols=
             start_srt = format_timestamp_srt(segment['start'])
             end_srt = format_timestamp_srt(segment['end'])
             text = segment['text'].strip()
-            speaker = speaker_labels[min(i, len(speaker_labels)-1)]  # На случай несоответствия длин
+
+            # Защита: если количество меток меньше количества сегментов
+            speaker_idx = speaker_labels[min(i, len(speaker_labels) - 1)]
+            speaker = f"Спикер {speaker_idx}" if speaker_idx != -1 else "Неизвестный спикер"
 
             # Для txt
-            final_text += f"[{start_srt} - {end_srt}] Спикер {speaker}: {text}\n"
+            final_text += f"[{start_srt} - {end_srt}] {speaker}: {text}\n"
 
             # Для srt
-            srt_content += f"{srt_counter}\n{start_srt} --> {end_srt}\nСпикер {speaker}: {text}\n\n"
+            srt_content += f"{srt_counter}\n{start_srt} --> {end_srt}\n{speaker}: {text}\n\n"
             srt_counter += 1
 
         # Сохраняем .txt
