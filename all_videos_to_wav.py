@@ -2,15 +2,15 @@ import os
 import subprocess
 
 # Папка с видеофайлами
-input_folder = "./videos"
+input_folder = "./videos_and_records"
 # Папка для сохранения wav файлов
 output_folder = "./wavs"
 
 # Создаем папку для wav файлов, если её нет
 os.makedirs(output_folder, exist_ok=True)
 
-# Поддерживаемые расширения видео
-video_extensions = (".mp4", ".avi", ".mov", ".mkv")
+# Поддерживаемые расширения видео и аудио .aac
+video_extensions = (".mp4", ".avi", ".mov", ".mkv", ".aac")
 
 # Проходим по всем файлам в папке
 for filename in os.listdir(input_folder):
