@@ -45,13 +45,11 @@ Together, these scripts streamline the process of transforming video files into 
    python wavs_translate_to_text.py
    ```
 5. Results will be saved in the `./wavs/results` folder.
-```
 
 ---
 
 ### Russian Version
 
-```markdown
 # translate_meetings_to_txt
 
 ## Описание
@@ -99,4 +97,3 @@ Together, these scripts streamline the process of transforming video files into 
    python wavs_translate_to_text.py
    ```
 5. Результаты будут сохранены в папке `./wavs/results`.
-```
