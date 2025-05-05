@@ -9,8 +9,8 @@ output_folder = "./wavs"
 # Создаем папку для wav файлов, если её нет
 os.makedirs(output_folder, exist_ok=True)
 
-# Поддерживаемые расширения видео и аудио .aac
-video_extensions = (".mp4", ".avi", ".mov", ".mkv", ".aac")
+# Поддерживаемые расширения видео и аудио .aac, mp3
+video_extensions = (".mp4", ".avi", ".mov", ".mkv", ".aac", ".mp3", ".ogg", ".flv", ".wmv", ".webm")
 
 # Проходим по всем файлам в папке
 for filename in os.listdir(input_folder):
