@@ -10,6 +10,7 @@ This project contains scripts for converting audio files to text using the Whisp
 
 - **wavs_translate_to_text.py**: The main script for converting audio files to text. It loads the Whisper model, processes files from the specified folder, and saves the results in text format.
 - **all_videos_to_files.py**: A script for converting video files to WAV audio format. Videos should be placed in the `./videos` folder.
+- **check_cuda.py**: A utility script to check if CUDA (GPU support) is available and properly configured on your system. This helps ensure that your environment is set up to use GPU acceleration for faster processing with the Whisper model. Running this script before processing large files can help you verify that your setup will utilize the GPU, avoiding slower CPU-only processing.
 
 ### Purpose of the Scripts
 
@@ -52,16 +53,21 @@ Together, these scripts streamline the process of transforming video files into 
 ### Usage
 
 1. Place video and audio files in the `./videos_and_records` folder.
-2. Run the `all_videos_to_files.py` script to convert videos to WAV format:
+2. (Optional but recommended) Run `check_cuda.py` to verify that your system can use GPU acceleration:
+   ```
+   python check_cuda.py
+   ```
+   If CUDA is available, you will see a confirmation message. If not, follow the instructions to install or configure CUDA for optimal performance.
+3. Run the `all_videos_to_files.py` script to convert videos to WAV format:
    ```
    python all_videos_to_files.py
    ```
-3. Move the resulting audio files to the `./wavs` folder.
-4. Run the `wavs_translate_to_text.py` script:
+4. Move the resulting audio files to the `./wavs` folder.
+5. Run the `wavs_translate_to_text.py` script:
    ```
    python wavs_translate_to_text.py
    ```
-5. Results will be saved in the `./wavs/results` folder.
+6. Results will be saved in the `./wavs/results` folder.
 
 ---
 
@@ -79,6 +85,7 @@ Together, these scripts streamline the process of transforming video files into 
 
 - **wavs_translate_to_text.py**: Основной скрипт для преобразования аудиофайлов в текст. Он загружает модель Whisper, обрабатывает файлы из указанной папки и сохраняет результаты в текстовом формате.
 - **all_videos_to_files.py**: Скрипт для преобразования видеофайлов в аудиоформат WAV. Видео должны быть помещены в папку `./videos`.
+- **check_cuda.py**: Вспомогательный скрипт для проверки наличия и корректной настройки CUDA (поддержки GPU) на вашей системе. Это позволяет убедиться, что ваша среда готова использовать ускорение на GPU для более быстрой обработки с помощью модели Whisper. Рекомендуется запускать этот скрипт перед обработкой больших файлов, чтобы убедиться, что будет использоваться GPU, а не только CPU.
 
 ### Назначение скриптов
 
@@ -121,13 +128,18 @@ Together, these scripts streamline the process of transforming video files into 
 ### Использование
 
 1. Поместите видеофайлы и аудиозаписи в папку `./videos_and_records`.
-2. Запустите скрипт `all_videos_to_files.py`, чтобы преобразовать видео в формат WAV:
+2. (Опционально, но рекомендуется) Запустите `check_cuda.py`, чтобы убедиться, что ваша система может использовать ускорение на GPU:
+   ```
+   python check_cuda.py
+   ```
+   Если CUDA доступна, вы увидите соответствующее сообщение. Если нет, следуйте инструкциям по установке или настройке CUDA для оптимальной производительности.
+3. Запустите скрипт `all_videos_to_files.py`, чтобы преобразовать видео в формат WAV:
    ```
    python all_videos_to_files.py
    ```
-3. Переместите полученные аудиофайлы в папку `./wavs`.
-4. Запустите скрипт `wavs_translate_to_text.py`:
+4. Переместите полученные аудиофайлы в папку `./wavs`.
+5. Запустите скрипт `wavs_translate_to_text.py`:
    ```
    python wavs_translate_to_text.py
    ```
-5. Результаты будут сохранены в папке `./wavs/results`.
+6. Результаты будут сохранены в папке `./wavs/results`.
