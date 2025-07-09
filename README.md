@@ -4,6 +4,8 @@
 
 This project contains scripts for converting audio files to text using the Whisper model from OpenAI. The scripts support various audio and video file formats and automatically determine whether to use GPU or CPU for processing.
 
+> **Note:** If you are using an NVIDIA graphics card and want faster processing, you need to install the CUDA driver: [CUDA Downloads](https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_network)
+
 ### Main Files
 
 - **wavs_translate_to_text.py**: The main script for converting audio files to text. It loads the Whisper model, processes files from the specified folder, and saves the results in text format.
@@ -24,10 +26,25 @@ Together, these scripts streamline the process of transforming video files into 
 - Python 3.10.9
 - Installed dependencies from `requirements.txt`
 
+
 ### Installation
 
 1. Clone the repository.
-2. Install the dependencies using the command:
+2. If you are using Windows 11, install ffmpeg using PowerShell (open PowerShell as Administrator):
+   ```
+   winget install --id=Gyan.FFmpeg --source=winget
+   ```
+3. (Recommended for Win10/11) Create and activate a virtual environment:
+   ```
+   python -m venv venv
+   .\.venv\Scripts\activate.bat
+   ```
+4. Install the dependencies:
+   ```
+   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+   pip install openai-whisper tqdm python-dotenv resemblyzer scikit-learn numpy
+   ```
+5. (Optional, but recommended) Install all dependencies from requirements.txt as a final step:
    ```
    pip install -r requirements.txt
    ```
@@ -56,6 +73,8 @@ Together, these scripts streamline the process of transforming video files into 
 
 Этот проект содержит скрипты для преобразования аудиофайлов в текст с использованием модели Whisper от OpenAI. Скрипты поддерживают различные форматы аудио и видео файлов и автоматически определяют, использовать ли GPU или CPU для обработки.
 
+> **Примечание:** Если вы используете видеокарту NVIDIA и хотите более быструю обработку, необходимо установить драйвер CUDA: [CUDA Downloads](https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_network)
+
 ### Основные файлы
 
 - **wavs_translate_to_text.py**: Основной скрипт для преобразования аудиофайлов в текст. Он загружает модель Whisper, обрабатывает файлы из указанной папки и сохраняет результаты в текстовом формате.
@@ -76,10 +95,25 @@ Together, these scripts streamline the process of transforming video files into 
 - Python 3.10.9
 - Установленные зависимости из `requirements.txt`
 
+
 ### Установка
 
 1. Клонируйте репозиторий.
-2. Установите зависимости с помощью команды:
+2. Если у вас Windows 10/11, установите ffmpeg через PowerShell (откройте PowerShell от имени администратора):
+   ```
+   winget install --id=Gyan.FFmpeg --source=winget
+   ```
+3. (Рекомендуется в Win10/11) Создайте и активируйте виртуальное окружение:
+   ```
+   python -m venv venv
+   .\.venv\Scripts\activate.bat
+   ```
+4. Установите зависимости:
+   ```
+   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+   pip install openai-whisper tqdm python-dotenv resemblyzer scikit-learn numpy
+   ```
+5. (Опционально, но рекомендуется) Установите все зависимости из requirements.txt завершающим шагом:
    ```
    pip install -r requirements.txt
    ```
