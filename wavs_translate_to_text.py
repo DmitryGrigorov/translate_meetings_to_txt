@@ -61,7 +61,7 @@ for filename in tqdm(media_files, desc="Обработка файлов", ncols=
         print(f"\n🚀 Работаем с файлом: {filename}")
 
         # Распознавание текста через Whisper
-        result = model.transcribe(file_path, word_timestamps=True, language=None)
+        result = model.transcribe(file_path, word_timestamps=True, language="ru")
 
         detected_language = result.get("language", "неизвестно")
         print(f"🌍 Определенный язык: {detected_language}")
