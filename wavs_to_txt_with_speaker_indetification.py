@@ -43,19 +43,26 @@ sys.stdout = log_file
 start_time = time.time()
 
 # Допустимые расширения
-extensions = (".wav", ".mp3", ".m4a", ".flac", ".ogg", ".mp4", ".avi", ".mov", ".mkv")
-media_files = [f for f in os.listdir(folder_path) if f.lower().endswith(extensions)]
+extensions = (
+    ".wav", ".mp3", ".m4a", ".flac", ".ogg", ".mp4", ".avi",
+    ".mov", ".mkv"
+)
+media_files = [f for f in os.listdir(folder_path)
+               if f.lower().endswith(extensions)]
+
 
 def cluster_speakers_dbscan(embeddings):
     embeddings = np.array(embeddings)
 
-    clustering = DBSCAN(eps=0.5, min_samples=5, metric="euclidean").fit(embeddings)
+    clustering = DBSCAN(eps=0.5, min_samples=5,
+                        metric="euclidean").fit(embeddings)
     labels = clustering.labels_
 
     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
     print(f"🔍 Найдено {n_clusters} спикеров (через DBSCAN)")
 
     return labels
+
 
 def format_timestamp_srt(seconds):
     td = timedelta(seconds=seconds)
@@ -65,6 +72,7 @@ def format_timestamp_srt(seconds):
     minutes = (total_seconds % 3600) // 60
     secs = total_seconds % 60
     return f"{hours:02}:{minutes:02}:{secs:02},{millis:03}"
+
 
 # Логи
 successfully_processed = []
@@ -78,7 +86,8 @@ for filename in tqdm(media_files, desc="Обработка файлов", ncols=
         print(f"\n🚀 Работаем с файлом: {filename}")
 
         # Распознавание текста через Whisper
-        result = model.transcribe(file_path, word_timestamps=True, language="ru")
+        result = model.transcribe(file_path, word_timestamps=True,
+                                  language="ru")
 
         detected_language = result.get("language", "неизвестно")
         print(f"🌍 Определенный язык: {detected_language}")
@@ -105,23 +114,27 @@ for filename in tqdm(media_files, desc="Обработка файлов", ncols=
 
             # Защита: если количество меток меньше количества сегментов
             speaker_idx = speaker_labels[min(i, len(speaker_labels) - 1)]
-            speaker = f"Спикер {speaker_idx}" if speaker_idx != -1 else "Неизвестный спикер"
+            speaker = (f"Спикер {speaker_idx}" if speaker_idx != -1
+                       else "Неизвестный спикер")
 
             # Для txt
             final_text += f"[{start_srt} - {end_srt}] {speaker}: {text}\n"
 
             # Для srt
-            srt_content += f"{srt_counter}\n{start_srt} --> {end_srt}\n{speaker}: {text}\n\n"
+            srt_content += (f"{srt_counter}\n{start_srt} --> {end_srt}\n"
+                            f"{speaker}: {text}\n\n")
             srt_counter += 1
 
         # Сохраняем .txt
         output_txt = os.path.splitext(filename)[0] + ".txt"
-        with open(os.path.join(results_folder, output_txt), "w", encoding="utf-8") as f:
+        with open(os.path.join(results_folder, output_txt), "w",
+                  encoding="utf-8") as f:
             f.write(final_text)
 
         # Сохраняем .srt
         output_srt = os.path.splitext(filename)[0] + ".srt"
-        with open(os.path.join(results_folder, output_srt), "w", encoding="utf-8") as f:
+        with open(os.path.join(results_folder, output_srt), "w",
+                  encoding="utf-8") as f:
             f.write(srt_content)
 
         print(f"✅ Успешно сохранены файлы: {output_txt}, {output_srt}")

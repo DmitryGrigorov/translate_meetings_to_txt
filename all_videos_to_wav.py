@@ -10,7 +10,10 @@ output_folder = "./wavs"
 os.makedirs(output_folder, exist_ok=True)
 
 # Поддерживаемые расширения видео и аудио .aac, mp3
-video_extensions = (".mp4", ".avi", ".mov", ".mkv", ".aac", ".mp3", ".ogg", ".flv", ".wmv", ".webm")
+video_extensions = (
+    ".mp4", ".avi", ".mov", ".mkv", ".aac", ".mp3",
+    ".ogg", ".flv", ".wmv", ".webm", ".m4a"
+)
 
 # Проходим по всем файлам в папке
 for filename in os.listdir(input_folder):
@@ -29,6 +32,7 @@ for filename in os.listdir(input_folder):
         ]
 
         print(f"🎬 Конвертация {filename} -> {output_filename}")
-        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.run(cmd, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.STDOUT)
 
 print("\n✅ Все видео успешно конвертированы в WAV!")
